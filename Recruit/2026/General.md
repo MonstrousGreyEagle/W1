@@ -4,7 +4,7 @@ https://www.youtube.com/watch?v=skqylbxAPP4
 
 ---Is_that_a_ppc_chall?---
 
-![](../img/2026-1789267941725.webp)
+![](../../img/2026-1789267941725.webp)
 
 Bài này là một bài cho phép mình thao tác trên Fenwick tree, với 1 thao tác độc lạ là resize cái Fenwick Tree này, và thao tác này không có sanity check
 
@@ -16,23 +16,23 @@ Bài này là một bài cho phép mình thao tác trên Fenwick tree, với 1 t
 
 (!) Fenwick Tree và các thao tác trên cây đọc thêm ở đây: https://cp-algorithms.com/data_structures/fenwick.html
 
-![](../img/2026-1789289073771.webp)
+![](../../img/2026-1789289073771.webp)
 
 Vì cái Fenwick tree này nó nằm trên stack (qword array s nằm trên stack), nên ta có thể resize cái struct sao cho nó nhận cả return address (cũng nằm trên stack) vào tầm của nó
 
-![](../img/2026-1789290598311.webp)
+![](../../img/2026-1789290598311.webp)
 
 Fenwick Tree của ta bắt đầu tại 0x7ffec2c211e0 (được highlight), và return address của ta ở 0x7ffec2c213f8 (một address trong libc_start_main) và ở dưới nó 0x10 byte là một address thuộc về binary
 
 Và vì Fenwick tree nhảy bit để tính tổng (ví dụ phần từ thứ 10 + phần tử thứ 8 + phần tử thứ 0), ta có thể dịch từ từ con trỏ để có thể tính lần lượt các address cần thiết trên stack (vì thao tác query là thao tác tính tổng dạng Fenwick tree, nên ta cần phải biết được một số giá trị trước target để phục hồi target từ sum của thao tác query), bao gồm return address (libc_start_main, một hàm trong libc được gọi trước main), và một exe address (một số hàm init của binary trước main mà mình cũng không rõ)
 
-![](../img/2026-1789268229498.webp)
+![](../../img/2026-1789268229498.webp)
 
-![](../img/2026-1789289250066.webp)
+![](../../img/2026-1789289250066.webp)
 
 Với address của libc_start_main và address của một hàm nào đó trong binary, ta có thể tính exe_base và libc_base, từ đó tính offset từ return address (libc_start_main) tới hàm win (một hàm trong binary) và dùng thao tác update để chỉnh sửa return address để nhảy vào hàm win và spawn shell (chú ý rsp 0x10 alignment vì khi gọi shell binary sẽ check 16 bytes alignment, ở đây ta cộng một offset 0x27 để tránh một cái push rbp ở đầu function để tránh 0x10 misalignment)
 
-![](../img/2026-1789290332281.webp)
+![](../../img/2026-1789290332281.webp)
 
 Một ví dụ về 0x10 misalignment (vì hệ thống 64 bits dùng xmmword, tức một cấu trúc 0x10 bytes, thứ chỉ có thể được lấy tại các địa chỉ align với 0x10)
 
@@ -141,19 +141,19 @@ if __name__ == "__main__":
 
 ---is that a rev chall?---
 
-![](../img/2026-1789394683019.webp)
+![](../../img/2026-1789394683019.webp)
 
-![](../img/2026-1789394695795.webp)
+![](../../img/2026-1789394695795.webp)
 
 Bài này cho phép ta viết 0x20 bytes vào 1 cái note trong 0xa note, với mỗi cái note được ngăn cách với nhau bởi null byte
 
 Sau đó, cái note của ta sẽ được đem đi qua 3 transformation và check để chạy vào 1 hàm win (fake)
 
-![](../img/2026-1789394821445.webp)
+![](../../img/2026-1789394821445.webp)
 
-![](../img/2026-1789394830549.webp)
+![](../../img/2026-1789394830549.webp)
 
-![](../img/2026-1789394850002.webp)
+![](../../img/2026-1789394850002.webp)
 
 Phase 1 chuyển hóa đầu của note, trừ đi 0x20 vào ký tử đầu
 
@@ -161,19 +161,19 @@ Phase 2 tính lại len của a1, RỒI mới trừ đi 0x10 vào a1Ilen-1I, t�
 
 Phase 3 copy cái note của ta vào 1 chunk dc malloc rồi gắn vào đuôi của cái note copy môt đoạn string 
 
-![](../img/2026-1789395027230.webp)
+![](../../img/2026-1789395027230.webp)
 
 Sau đó ans check sẽ cmpstring của ta và trả về Đúng/Sai, lưu ý là nó chỉ check 13 bytes đầu, nên ta chỉ cần thỏa mãn 13 bytes đầu là đủ để qua dc ans_chk
 7
-![](../img/2026-1789395116572.webp)
+![](../../img/2026-1789395116572.webp)
 
 Trong hàm win mà ta chạy tới, cái process sẽ sử dụng 1 cái hash xor để hash các cái kí tự của ta lại để lấy flag(fake), nhưng cái hash này sẽ thực hiện trên stack, nên giả định nếu ta có 1 xâu đủ dài, ta có thể hash tới return address để có được 1 cái arbitary execution 
 
-![](../img/2026-1789395477738.webp)
+![](../../img/2026-1789395477738.webp)
 
 Cái hash của ta ở 0x7ffc98300220 và return address ở 0x7ffc98300278
 
-![](../img/2026-1789395239866.webp)
+![](../../img/2026-1789395239866.webp)
 
 Đáng chú ý, ta có một hàm gọt shell trong binary, và cái srand của hash này nó xử dụng 1 seed cụ thể, nên ta có sẵn các dữ liệu để build xâu hash
 
@@ -282,30 +282,32 @@ if __name__ == "__main__":
 
 Vì bài này không có server nên là flag nó sẽ nằm trong cái binary luôn
 
-![](./2026-1789400474265.webp)
+![](../2026-1789400474265.webp)
 
-![](./2026-1789400496192.webp)
+![](../2026-1789400496192.webp)
 
 nhìn qua pseudo code trong gdb thì không thấy cái phần nào là checkflag hết, nma có 1 biến v33 được tạo ra thành vùng executable bằng sys_munmap, rồi gọi vào, nên khả năng cao là function check flag
 
-![](./2026-1789401421610.webp)
+![](../2026-1789401421610.webp)
 
-![](./2026-1789401477425.webp)
+![](../2026-1789401477425.webp)
 
 Khi ta kiểm tra, ta thấy input được so sánh với 1 xâu hash với hash key tăng 0x17 sau mỗi lần hash
 
 Nhưng khi ta cố gắng khôi phục flag, xâu ta nhận được lại không viết tay được
 
-![](./2026-1789402739992.webp)
+![](../2026-1789402739992.webp)
 
 debug tiếp, ta thấy process open file và xử lý mà không tương tác với giao diện
 
-![](./2026-1789402826269.webp)
+![](../2026-1789402826269.webp)
 
-![](./2026-1789402960421.webp)
+![](../2026-1789402960421.webp)
 
 nhìn lên phía trên ta có thể thấy tên file đã được hash xor
 
-![](./2026-1789403022390.webp)
+![](../2026-1789403022390.webp)
 
-khi debug trong dbg, ta thấy process open file /pro/self/status, khả năng cao là để check xem file c
+khi debug trong dbg, ta thấy process open file /pro/self/status, khả năng cao là để check xem file có đang bị trace không
+
+Dùng gdb jump qua đoạn đó, vào lại function check flag, ta thấy một đoạn mã khac
