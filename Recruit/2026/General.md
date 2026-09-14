@@ -310,4 +310,8 @@ nhìn lên phía trên ta có thể thấy tên file đã được hash xor
 
 khi debug trong dbg, ta thấy process open file /pro/self/status, khả năng cao là để check xem file có đang bị trace không
 
-Dùng gdb jump qua đoạn đó, vào lại function check flag, ta thấy một đoạn mã khac
+Dùng gdb jump qua đoạn đó, vào lại function check flag, ta thấy một đoạn mã khác
+
+![](./General-1789403164952.webp)
+
+từ đây ta có thể tìm dc flag ban
