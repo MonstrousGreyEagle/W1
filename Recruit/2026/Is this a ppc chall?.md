@@ -1,4 +1,3 @@
-
 ![](../../img/2026-1789267941725.webp)
 
 Bài này là một bài cho phép mình thao tác trên Fenwick tree, với 1 thao tác độc lạ là resize cái Fenwick Tree này, và thao tác này không có sanity check
