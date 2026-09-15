@@ -18,19 +18,19 @@ Phase 2 tính lại len của a1, RỒI mới trừ đi 0x10 vào a1Ilen-1I, t�
 
 Phase 3 copy cái note của ta vào 1 chunk dc malloc rồi gắn vào đuôi của cái note copy môt đoạn string 
 
-![](./Is%20this%20a%20rev%20chall_-1789439162697.webp)
+![](../../img/Is%20this%20a%20rev%20chall_-1789439162697.webp)
 
 note 1
 
-![](./Is%20this%20a%20rev%20chall_-1789439216371.webp)
+![](../../img/Is%20this%20a%20rev%20chall_-1789439216371.webp)
 
 note 2 (đã qua phase 1 và byte thứ nhất tại 0x14d892c1 trở thành NULL)
 
-![](./Is%20this%20a%20rev%20chall_-1789439275984.webp)
+![](../../img/Is%20this%20a%20rev%20chall_-1789439275984.webp)
 
 byte NULL phân cách 2 note đã bi patch thành 0xf0
 
-![](./Is%20this%20a%20rev%20chall_-1789439314305.webp)
+![](../../img/Is%20this%20a%20rev%20chall_-1789439314305.webp)
 
 note 2 patch lại để 2 note nối tiếp
 
@@ -44,13 +44,13 @@ Trong hàm win mà ta chạy tới, cái process sẽ sử dụng 1 cái xor đ�
 
 Đáng chú ý, process này sử dụng srand(0x539), tức dãy random dùng để xor chuỗi bytes là cố định,  cộng thêm bug nối xâu ở phase2, ta có đủ tài nguyên để xây một payload chuyển đổi stack tùy ý
 
-![](./Is%20this%20a%20rev%20chall_-1789436042580.webp)
+![](../../img/Is%20this%20a%20rev%20chall_-1789436042580.webp)
 
 Vị trí ghi của function nằm ở 0x7ffe16f87cc0 và return address ở 0x7ffe16f87d18
 
 Chú ý là v4 (count) và i (interator) cũng nằm trên stack (tại 0x7ffe16f87cf0 và 0x7ffe16f87cfc), nên ta cần giữ nguyên được giá trị của nó trên stack để ta không gập vấn đề về con trỏ trong quá trình ghi
 
-![](./Is%20this%20a%20rev%20chall_-1789436232036.webp)
+![](../../img/Is%20this%20a%20rev%20chall_-1789436232036.webp)
 
 Ví dụ về stack sau khi ghi đè return address
 
