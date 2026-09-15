@@ -32,7 +32,7 @@ Cái hash của ta ở 0x7ffc98300220 và return address ở 0x7ffc98300278
 
 ![](../../img/2026-1789395239866.webp)
 
-Đáng chú ý, ta có một hàm gọt shell trong binary, và cái srand của hash này nó xử dụng 1 seed cụ thể, nên ta có sẵn các dữ liệu để build xâu hash
+Đáng chú ý, ta có một hàm gọi shell trong binary, và cái srand của hash này nó xử dụng 1 seed cụ thể, tức srand sẽ cố định, nên ta có sẵn các dữ liệu để build xâu hash
 
 Hơn thế nữa, vì ta có thể nới dài xâu bằng bug trong phase 2, nên ta có thể tùy ý build 1 payload
 
