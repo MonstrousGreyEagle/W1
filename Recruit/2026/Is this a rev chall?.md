@@ -32,7 +32,7 @@ byte NULL phân cách 2 note đã bi patch thành 0xf0
 
 ![](./Is%20this%20a%20rev%20chall_-1789439314305.webp)
 
-byte đã patch 
+note 2 patch lại để 2 note nối tiếp
 
 ![](../../img/2026-1789395027230.webp)
 
@@ -40,7 +40,7 @@ Sau đó ans check sẽ cmpstring của ta và trả về Đúng/Sai, lưu ý l�
 
 ![](../../img/2026-1789395116572.webp)
 
-Trong hàm win mà ta chạy tới, cái process sẽ sử dụng 1 cái xor để encrypt các cái kí tự của ta lại để lấy flag(fake), nhưng cái hash này sẽ thực hiện trên stack, nên giả định nếu ta có 1 xâu đủ dài, ta có thể hash tới return address để có được 1 cái arbitary execution 
+Trong hàm win mà ta chạy tới, cái process sẽ sử dụng 1 cái xor để encrypt các cái kí tự của ta lại để lấy flag(fake), nhưng cái encryption này sẽ ghi kết quả trên stack, nên giả định nếu ta có 1 xâu đủ dài, ta có thể ghi tới return address để có được 1 cái arbitary execution 
 
 Đáng chú ý, process này sử dụng srand(0x539), tức dãy random dùng để xor chuỗi bytes là cố định,  cộng thêm bug nối xâu ở phase2, ta có đủ tài nguyên để xây một payload chuyển đổi stack tùy ý
 
