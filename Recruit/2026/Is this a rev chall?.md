@@ -18,6 +18,22 @@ Phase 2 tính lại len của a1, RỒI mới trừ đi 0x10 vào a1Ilen-1I, t�
 
 Phase 3 copy cái note của ta vào 1 chunk dc malloc rồi gắn vào đuôi của cái note copy môt đoạn string 
 
+![](./Is%20this%20a%20rev%20chall_-1789439162697.webp)
+
+note 1
+
+![](./Is%20this%20a%20rev%20chall_-1789439216371.webp)
+
+note 2 (đã qua phase 1 và byte thứ nhất tại 0x14d892c1 trở thành NULL)
+
+![](./Is%20this%20a%20rev%20chall_-1789439275984.webp)
+
+byte NULL phân cách 2 note đã bi patch thành 0xf0
+
+![](./Is%20this%20a%20rev%20chall_-1789439314305.webp)
+
+byte đã patch 
+
 ![](../../img/2026-1789395027230.webp)
 
 Sau đó ans check sẽ cmpstring của ta và trả về Đúng/Sai, lưu ý là nó chỉ check 13 bytes đầu, nên ta chỉ cần thỏa mãn 13 bytes đầu là đủ để qua dc ans_chk 
@@ -25,6 +41,8 @@ Sau đó ans check sẽ cmpstring của ta và trả về Đúng/Sai, lưu ý l�
 ![](../../img/2026-1789395116572.webp)
 
 Trong hàm win mà ta chạy tới, cái process sẽ sử dụng 1 cái xor để encrypt các cái kí tự của ta lại để lấy flag(fake), nhưng cái hash này sẽ thực hiện trên stack, nên giả định nếu ta có 1 xâu đủ dài, ta có thể hash tới return address để có được 1 cái arbitary execution 
+
+Đáng chú ý, process này sử dụng srand(0x539), tức dãy random dùng để xor chuỗi bytes là cố định,  cộng thêm bug nối xâu ở phase2, ta có đủ tài nguyên để xây một payload chuyển đổi stack tùy ý
 
 ![](./Is%20this%20a%20rev%20chall_-1789436042580.webp)
 
@@ -34,13 +52,11 @@ Chú ý là v4 (count) và i (interator) cũng nằm trên stack (tại 0x7ffe16
 
 ![](./Is%20this%20a%20rev%20chall_-1789436232036.webp)
 
-Ví dụ về stack sau khi được ghi
+Ví dụ về stack sau khi ghi đè return address
 
 ![](../../img/2026-1789395239866.webp)
 
-Đáng chú ý, ta có một hàm gọi shell trong binary, và cái srand của hash này nó xử dụng 1 seed cụ thể, tức srand sẽ cố định, nên ta có sẵn các dữ liệu để build xâu hash
-
-Hơn thế nữa, vì ta có thể nới dài xâu bằng bug trong phase 2, nên ta có thể tùy ý build 1 payload
+hàm win mà ta có thể nhảy tới để gọi shell
 
 ```
 #!/usr/bin/env python3
