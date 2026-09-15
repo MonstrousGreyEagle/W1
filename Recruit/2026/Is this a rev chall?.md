@@ -26,7 +26,6 @@ Sau đó ans check sẽ cmpstring của ta và trả về Đúng/Sai, lưu ý l�
 
 Trong hàm win mà ta chạy tới, cái process sẽ sử dụng 1 cái xor để encrypt các cái kí tự của ta lại để lấy flag(fake), nhưng cái hash này sẽ thực hiện trên stack, nên giả định nếu ta có 1 xâu đủ dài, ta có thể hash tới return address để có được 1 cái arbitary execution 
 
-![](../../img/2026-1789395477738.webp)
 
 Cái hash của ta ở 0x7ffc98300220 và return address ở 0x7ffc98300278
 
