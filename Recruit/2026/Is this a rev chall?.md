@@ -30,7 +30,7 @@ Trong hàm win mà ta chạy tới, cái process sẽ sử dụng 1 cái xor đ�
 
 Vị trí ghi của function nằm ở 0x7ffe16f87cc0 và return address ở 0x7ffe16f87d18
 
-Chú ý là v4 (count) và i (interator) cũng nằm trên stack (tại , và ta cần giữ nguyên được giá trị của nó trên stack
+Chú ý là v4 (count) và i (interator) cũng nằm trên stack (tại 0x7ffe16f87cf0 và 0x7ffe16f87cfc), nên ta cần giữ nguyên được giá trị của nó trên stack để ta không gập vấn đề về con trỏ 
 
 ![](../../img/2026-1789395239866.webp)
 
