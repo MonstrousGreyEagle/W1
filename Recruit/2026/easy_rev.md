@@ -10,7 +10,7 @@ nhìn qua pseudo code trong gdb thì không thấy cái phần nào là checkfla
 
 ![](../../img/2026-1789401477425.webp)
 
-Khi ta kiểm tra, ta thấy input được so sánh với 1 xâu hash với hash key tăng 0x17 sau mỗi lần hash
+Khi ta kiểm tra, ta thấy input được so sánh với 1 xâu encrypted với encryption key tăng 0x17 sau mỗi lần xor
 
 Nhưng khi ta cố gắng khôi phục flag, xâu ta nhận được lại không viết tay được
 
@@ -22,7 +22,7 @@ debug tiếp, ta thấy process open file và xử lý mà không tương tác v
 
 ![](../../img/2026-1789402960421.webp)
 
-nhìn lên phía trên ta có thể thấy tên file đã được hash xor
+nhìn lên phía trên ta có thể thấy tên file đã được xor
 
 ![](../../img/2026-1789403022390.webp)
 
