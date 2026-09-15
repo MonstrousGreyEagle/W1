@@ -28,15 +28,15 @@ Trong hàm win mà ta chạy tới, cái process sẽ sử dụng 1 cái xor đ�
 
 ![](./Is%20this%20a%20rev%20chall_-1789436042580.webp)
 
- ở 0x7ffe16f87cc0 và return address ở 0x7ffc98300278
+Vị trí ghi của function nằm ở 0x7ffe16f87cc0 và return address ở 0x7ffe16f87d18
+
+Chú ý là v4 (count) và i (interator) cũng nằm trên stack (tại , và ta cần giữ nguyên được giá trị của nó trên stack
 
 ![](../../img/2026-1789395239866.webp)
 
 Đáng chú ý, ta có một hàm gọi shell trong binary, và cái srand của hash này nó xử dụng 1 seed cụ thể, tức srand sẽ cố định, nên ta có sẵn các dữ liệu để build xâu hash
 
 Hơn thế nữa, vì ta có thể nới dài xâu bằng bug trong phase 2, nên ta có thể tùy ý build 1 payload
-
-Chú ý là v4 (count) và i (interator) cũng nằm trên stack, và ta cần giữ nguyên được giá trị của nó trên stack
 
 ```
 #!/usr/bin/env python3
